@@ -57,6 +57,7 @@ class Encoder(nn.Module):
         self.device = device
         self.num_labels = num_labels
         self.conditional = conditional
+        layer_sizes.insert(0, 784)
         if self.conditional:
             layer_sizes[0] += num_labels
 
@@ -95,6 +96,7 @@ class Decoder(nn.Module):
 
         self.device = device
         self.num_labels = num_labels
+        layer_sizes.append(784)
         self.conditional = conditional
         if self.conditional:
             input_size = latent_size + num_labels

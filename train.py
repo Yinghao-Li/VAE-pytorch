@@ -12,15 +12,15 @@ from core.network import VAE
 
 # Reconstruction + KL divergence losses summed over all elements and batch
 def loss_function(recon_x, x, mu, logvar):
-    BCE = F.binary_cross_entropy(recon_x, x.view(-1, 784), reduction='sum')
+    bce = F.binary_cross_entropy(recon_x, x.view(-1, 784), reduction='sum')
 
     # see Appendix B from VAE paper:
     # Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014
     # https://arxiv.org/abs/1312.6114
     # 0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
-    KLD = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
+    kld = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
 
-    return BCE + KLD
+    return bce + kld
 
 
 def train_epoch(model, optimizer, train_loader, device, args, epoch):
@@ -114,10 +114,10 @@ def main():
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=int, default=0.001,
                         help='set learning rate (default: 0.001)')
-    parser.add_argument('--encoder-sizes', type=list, default=[784, 256],
-                        help='hidden sizes of encoder layers (default: [784, 256])')
-    parser.add_argument('--decoder-sizes', type=list, default=[256, 784],
-                        help='hidden sizes of decoder layers (default: [256, 784])')
+    parser.add_argument('--encoder-sizes', nargs='+', type=int, default=[256],
+                        help='hidden sizes of encoder layers (default: [256])')
+    parser.add_argument('--decoder-sizes', nargs='+', type=int, default=[256],
+                        help='hidden sizes of decoder layers (default: [256])')
     parser.add_argument('--latent-size', type=int, default=64,
                         help='the dimension of latent variable')
     parser.add_argument('--conditional', action='store_true', default=False,
