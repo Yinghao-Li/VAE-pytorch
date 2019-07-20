@@ -66,6 +66,7 @@ def test_epoch(model, test_loader, device, args, epoch):
 
             test_loss += loss_function(recon_batch, data, mu, logvar).item()
             if i == 0:
+
                 n = min(data.size(0), 8)
                 comparison = torch.cat(
                     [data[:n], recon_batch.view(
